@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="/css/loginstyle.css">
+  <script>
+    // Client-side validation for the login form
+    function validateLogin(event) {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert('Please enter a valid email address.');
+        event.preventDefault();
+        return false;
+      }
+
+      // Password validation
+      if (password.length < 6) {
+        alert('Password should be at least 6 characters long.');
+        event.preventDefault();
+        return false;
+      }
+
+      return true;
+    }
+  </script>
+</head>
+<body>
+  <div class="login-container">
+    <h1>Login</h1>
+    <form action="/login" method="POST" onsubmit="return validateLogin(event)">
+      <input type="email" id="email" name="email" placeholder="Email" required>
+      <input type="password" id="password" name="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+    <a href="/signup">Don't have an account? Sign Up</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<div class="sidebar">
+    <h2>Audienzo</h2>
+    <ul>
+        <li><a href="/conferenceManagement/<%= conferenceId %>">Event Details</a></li>
+        <li><a href="#">Attendees</a>
+            <ul>
+                <li><a href="/attendees/<%= conferenceId %>">Attendees</a></li>
+                <li><a href="/registrants/<%= conferenceId %>">Registrants</a></li>
+                <li><a href="/markAttendance/<%= conferenceId %>">Mark Attendance</a></li>
+            </ul>
+        </li>
+        <li><a href="#">Communication</a>
+            <ul>
+                <li><a href="/send-bulk-mail?conferenceId=<%= conferenceId %>">Send Bulk Email</a></li>
+                <li><a href="/setReminder/<%= conferenceId %>">Set Reminder</a></li>
+            </ul>
+        </li>
+        <li><a href="/editConference/<%= conferenceId %>">Edit Event</a></li>
+        <li><a href="/dashboard">Back to All Events</a></li>
+    </ul>
+</div>

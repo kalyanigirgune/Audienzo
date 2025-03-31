@@ -1,0 +1,119 @@
+
+.hero-section {
+  background: url('https://res.cloudinary.com/dqrp0cgys/image/upload/v1743416377/home_ib7tav.jpg') no-repeat center center;
+  background-size: cover;
+  height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  color: #ffffff;
+  padding: 20px;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.hero-text {
+  position: relative;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 30px;
+  border-radius: 15px;
+  backdrop-filter: blur(5px);
+  max-width: 60%;
+  text-align: center;
+}
+
+.hero-text h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #f8f9fa;
+}
+.hero-text p {
+  font-size: 1rem;
+  color: #ddd;
+  margin-bottom: 15px;
+}
+.hero-text .btn-primary {
+  margin-top: 15px;
+}
+.feature-card {
+  border: none;
+  background: #fff;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  border-radius: 20px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  overflow: hidden;
+}
+.feature-card:hover {
+  transform: scale(1.08);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25);
+}
+.feature-icon {
+  font-size: 3.5rem;
+  color: rgba(30, 6, 183, 0.8) ;
+}
+.conference-card {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  position: relative;
+  background: #fff;
+}
+.conference-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+.conference-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+.card-body {
+  padding: 20px;
+}
+
+.deadline-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(30, 6, 183, 0.8);
+  color: white;
+  padding: 6px 15px;
+  font-weight: bold;
+  border-radius: 5px;
+  font-size: 0.85rem;
+}
+
+footer {
+  background: #222;
+  color: #fff;
+  padding: 30px 0;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, rgba(30, 6, 183, 0.8), rgba(30, 6, 183, 0.8));
+  color: white;
+  padding: 10px 10px;
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  display: inline-block;
+  font-weight: bold;
+  transition: background 0.3s, transform 0.2s;
+}
+.btn-primary:hover {
+  background: linear-gradient(135deg, rgba(30, 6, 183, 0.8), rgba(30, 6, 183, 0.8));
+  transform: scale(1.08);
+}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Event</title>
+    <link rel="stylesheet" href="/css/addConference.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Add New Event</h2>
+        <form action="/add-conference" method="POST" enctype="multipart/form-data">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="title">Event Title:</label>
+                    <input type="text" name="title" id="title" placeholder="Enter title" required>
+                </div>
+                <div class="form-group">
+                    <label for="organizer">Organizer:</label>
+                    <input type="text" name="organizer" id="organizer" placeholder="Organizer Name" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="condate">Event Date:</label>
+                    <input type="date" name="date" id="condate" required>
+                </div>
+                <div class="form-group">
+                    <label for="contime">Event Time:</label>
+                    <input type="time" name="time" id="contime" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="location">Location:</label>
+                    <input type="text" name="location" id="location" placeholder="Enter location" required>
+                </div>
+                <div class="form-group">
+                    <label for="deaddate">Application Deadline:</label>
+                    <input type="date" name="deadline" id="deaddate" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="image">Upload Image:</label>
+                    <input type="file" name="image" id="image" accept="image/*" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Event Description:</label>
+                <textarea name="description" id="description" rows="4" placeholder="Enter conference details..." required></textarea>
+            </div>
+
+            <button type="submit">Add Event</button>
+        </form>
+    </div>
+</body>
+</html>

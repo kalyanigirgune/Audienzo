@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mark Attendance</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+    <link rel="stylesheet" href="/css/markAttendance.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <%- include('partials/sidebar', { conferenceId: conferenceId }) %>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <h2>Scan QR Code for Attendance</h2>
+            <button id="startCamera">Start Camera</button>
+            <div id="qr-reader"></div>
+            <p><strong>Scanned Code:</strong> <span id="qr-result">None</span></p>
+        </div>
+    </div>
+
+    <script>
+        let conferenceId = "<%= conferenceId %>"; // Define conferenceId globally
+        console.log("Conference ID:", conferenceId);
+
+        let scanner;
+        document.getElementById("startCamera").addEventListener("click", function () {
+            document.getElementById("qr-reader").style.display = "block";
+            scanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 });
+            scanner.render(qrCodeSuccessCallback);
+        });
+
+        function qrCodeSuccessCallback(decodedText) {
+            console.log("Decoded QR Code:", decodedText); // Debugging
+
+            const cleanedText = decodedText.trim();
+            const match = cleanedText.match(/Email:\s*([\w.-]+@[\w.-]+\.[a-zA-Z]+)[\s\S]*Conference:\s*(.+)/i);
+
+            if (!match) {
+                alert(`❌ Invalid QR Code format! Scanned: "${decodedText}"`);
+                return;
+            }
+
+            const scannedEmail = match[1].trim();
+            const scannedConferenceName = match[2].trim();
+
+            console.log(`Extracted Email: ${scannedEmail}`);
+            console.log(`Extracted Conference: ${scannedConferenceName}`);
+
+            fetch(`http://localhost:3000/markAttendance/${conferenceId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: scannedEmail })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                console.log("Server Response:", data);
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+</body>
+
+</html>

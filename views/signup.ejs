@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="/css/signupstyle.css">
+<script>
+    window.onload = function() {
+        let errorMsg = "<%= error %>";
+        let successMsg = "<%= success %>";
+
+        if (errorMsg) {
+            alert(errorMsg);
+        }
+        if (successMsg) {
+            alert(successMsg);
+        }
+    };
+</script>
+
+</head>
+<body>
+  <div class="signup-container">
+    <h1>Sign Up</h1>
+    <form action="/signup" method="POST" onsubmit="return validateSignup(event)">
+      <input type="text" id="username" name="username" placeholder="Username" required>
+      <input type="email" id="email" name="email" placeholder="Email" required>
+      <input type="password" id="password" name="password" placeholder="Password" required>
+      <div class="terms">
+        <input type="checkbox" id="terms" name="terms" required>
+        <span class="agree-text">I agree to the</span> 
+        <a href="/terms" onclick="saveFormData()">Terms and Conditions</a> and 
+        <a href="/privacy" onclick="saveFormData()">Privacy</a>
+      </div>                   
+      <button type="submit">Sign Up</button>
+    </form>
+    <a href="/login" class="login-link">Already have an account? Login</a>
+  </div>
+
+</body>
+</html>

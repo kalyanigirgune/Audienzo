@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Attendees</title>
+    <link rel="stylesheet" href="/css/attendees.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+</head>
+
+<body>
+    <div class="container">
+        <%- include('partials/sidebar', { conferenceId: conferenceId }) %>
+            <div class="main-content">
+                <h2>Attendees for <%= conference.title %></h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (attendees.length> 0) { %>
+                            <% attendees.forEach(attendee=> { %>
+                                <tr>
+                                    <td>
+                                        <%= attendee.name %>
+                                    </td>
+                                    <td>
+                                        <%= attendee.email %>
+                                    </td>
+                                    <td>
+                                        <%= attendee.phone %>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="3">No attendees have marked their attendance yet.</td>
+                                        </tr>
+                                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+    </div>
+</body>
+
+</html>

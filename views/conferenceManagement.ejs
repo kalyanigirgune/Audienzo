@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conference Management</title>
+    <link rel="stylesheet" href="/css/conferenceManagement.css"> 
+    <link rel="stylesheet" href="/css/sidebar.css"> 
+</head>
+
+<body>
+    <!-- Sidebar Navigation -->
+    <%- include('partials/sidebar', { conferenceId: conferenceId }) %>
+
+    <!-- Main Content Area -->
+    <div class="content" id="content">
+        <% if (conference) { %>
+            <section>
+                <h2>
+                    <%= conference.title %>
+                </h2>
+                <p><strong>Date:</strong>
+                    <%= new Date(conference.date).toDateString() %>
+                </p>
+                <p><strong>Organizer:</strong>
+                    <%= conference.organizer %>
+                </p>
+                <p><strong>Location:</strong>
+                    <%= conference.location %>
+                </p>
+                <p><strong>Description:</strong></p>
+                <% conference.description.split('\n').forEach(function(paragraph) { %>
+                    <p>
+                        <%= paragraph %>
+                    </p>
+                    <% }) %>
+
+            </section>
+            <% } else { %>
+                <p>Event details not available.</p>
+                <% } %>
+    </div>
+</body>
+
+</html>

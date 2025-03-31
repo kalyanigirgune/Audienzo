@@ -1,0 +1,59 @@
+.custom-navbar {
+    background: rgba(30, 6, 183, 0.8);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 8px 0;  
+    min-height: 50px; 
+}
+
+.custom-navbar .navbar-brand {
+    font-size: 1.3rem;  
+    font-weight: bold;
+    color: white;
+    transition: color 0.3s ease-in-out;
+}
+
+.custom-navbar .nav-link {
+    font-weight: 600;
+    color: white;
+    transition: color 0.3s ease-in-out;
+    padding: 5px 10px; 
+}
+
+.custom-navbar .nav-link:hover {
+    color: lightgray; 
+}
+
+.custom-navbar .login-btn {
+    padding: 5px 15px;
+    border: 2px solid white;
+    border-radius: 6px;
+    color: white;
+    font-weight: 600;
+    transition: 0.3s ease-in-out;
+    font-size: 0.9rem;
+    background: transparent;
+}
+
+.custom-navbar .login-btn:hover {
+    color: black;
+    background-color: white;
+    border-color: rgba(34, 9, 199, 0.8);
+}
+
+.navbar-toggler {
+    border: none;
+    padding: 5px;
+}
+
+.navbar-toggler:focus,
+.navbar-toggler:active {
+    outline: none;
+    box-shadow: none;
+}
+
+.custom-navbar .nav-link.active {
+    color: yellow; 
+    font-weight: bold;
+    border-bottom: 2px solid yellow; 
+}

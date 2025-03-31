@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Event</title>
+    <link rel="stylesheet" href="/css/editConference.css">
+    <link rel="stylesheet" href="/css/sidebar.css"> 
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <%- include('partials/sidebar', { conferenceId: conferenceId }) %>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <h2 style="color: black;">Edit Event</h2>
+            <form action="/editConference/<%= conference._id %>" method="POST" enctype="multipart/form-data">
+                <label for="title">Event Title:</label>
+                <input type="text" name="title" value="<%= conference.title %>" required>
+
+                <label for="date">Date:</label>
+                <input type="date" name="date" value="<%= conference.date ? conference.date : '' %>" required>
+
+                <label for="time">Time:</label>
+                <input type="time" name="time" value="<%= conference.time ? conference.time : '' %>" required>
+
+                <label for="organizer">Organizer:</label>
+                <input type="text" name="organizer" value="<%= conference.organizer %>" required>
+
+                <label for="location">Location:</label>
+                <input type="text" name="location" value="<%= conference.location %>" required>
+
+                <label for="deadline">Application Deadline:</label>
+                <input type="date" name="deadline" value="<%= conference.deadline ? conference.deadline : '' %>"
+                    required>
+
+                <label for="image">Event Image</label>
+                <input type="file" name="image" accept="image/*" id="imageInput">
+
+                <% if (conference.image) { %>
+                    <p>Current Image:</p>
+                    <img src="<%= conference.image %>" alt="Conference Image" width="200">
+                    <% } %>
+
+                        <label for="description">Description:</label>
+                        <textarea name="description" rows="4" required><%= conference.description %></textarea>
+
+                        <button type="submit">Update Event</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

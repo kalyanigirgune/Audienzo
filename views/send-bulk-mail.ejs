@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Bulk Email</title>
+    <link rel="stylesheet" href="/css/send-bulk-email.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    <!-- Include Quill.js for Rich Text Editing -->
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+     <!-- Sidebar -->
+     <%- include('partials/sidebar', { conferenceId: conferenceId }) %>
+
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <h2>Send Bulk Email</h2>
+            <form id="emailForm" enctype="multipart/form-data">
+                <label for="csvUpload">Upload CSV File:</label>
+                <input type="file" id="csvUpload" name="csvUpload" accept=".csv" required>
+
+                <label for="subject">Subject:</label>
+                <input type="text" name="subject"
+                    value="Invitation to <%= conference.title %> on <%= conference.date %>" required>
+
+                <label for="message">Message:</label>
+                <div id="editor">
+                    <p>Dear Attendee,</p>
+
+                    <p>We are delighted to invite you to <b>
+                            <%= conference.title %>
+                        </b>, an insightful conference organized by <b>
+                            <%= conference.organizer %>
+                        </b>.</p>
+
+                    <p>This event is scheduled to take place on <b>
+                            <%= conference.date %>
+                        </b>, and we would be honored to have you join us.</p>
+
+                    <p>Get ready for an enriching experience filled with valuable discussions, networking opportunities,
+                        and knowledge sharing.</p>
+
+                    <p>We truly look forward to your participation!</p>
+
+                    <p>Best Regards,<br><b>
+                            <%= conference.organizer %>
+                        </b></p>
+
+                </div>
+
+                <label for="attachment">Attachment (Image):</label>
+                <input type="file" name="attachment" id="attachment" accept="image/*">
+
+                <button type="submit">Send Emails</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var quill = new Quill('#editor', { theme: 'snow' });
+
+            document.querySelector("#emailForm").addEventListener("submit", async function (event) {
+                event.preventDefault(); // Prevent default form submission
+
+                const formData = new FormData(this);
+                formData.set("message", quill.root.innerHTML); // Add formatted message content
+
+                const response = await fetch('/send-bulk-mail', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert("Emails have been sent successfully!");
+                } else {
+                    alert("Failed to send emails. Please try again.");
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

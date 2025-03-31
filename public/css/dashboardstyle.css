@@ -1,0 +1,193 @@
+
+/* Centered Welcome Text with Background Band */
+/* Centered Welcome Text with Background Band */
+.welcome-text {
+    text-align: center;
+    font-size: 1.2rem; /* Reduced size */
+    font-weight: bold;
+    color: white;
+    background: rgba(30, 6, 183, 0.9); /* Blue background */
+    padding: 10px 25px; /* Adjusted padding */
+    border-radius: 8px; /* Slightly rounded corners */
+    display: block; /* Full width */
+    width: fit-content; /* Only as wide as the text */
+    margin: 20px auto; /* Centers it horizontally */
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.15); /* Subtle shadow */
+    margin-top: 10px;
+}
+
+/* Section Titles */
+h3 {
+    text-align: center;
+    margin-top: 20px;
+    font-weight: bold;
+    color: #343a40;
+}
+
+/* Button Styling */
+.btn {
+    border: 2px solid transparent;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 10px 20px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Primary Button - Upcoming Conferences */
+.btn-primary {
+    color: rgba(30, 6, 183, 0.8);
+    background-color: transparent;
+    border-color: rgba(30, 6, 183, 0.8);
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    background-color: rgba(30, 6, 183, 0.8);
+    color: white;
+    border-color: rgba(30, 6, 183, 0.8);
+    box-shadow: none;
+}
+
+/* Secondary Button - Past Conferences */
+.btn-secondary {
+    color: #6c757d;
+    background-color: transparent;
+    border-color: #6c757d;
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus,
+.btn-secondary:active {
+    background-color: #6c757d;
+    color: white;
+    border-color: #6c757d;
+    box-shadow: none;
+}
+
+/* Conference Section */
+#upcomingConferences h3{
+    font-size: 20px;
+    padding: 20px;
+    text-align: center;
+}
+
+#pastConferences h3{
+    font-size: 20px;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Grid Layout */
+.conference-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Auto adjusts to screen size */
+    gap: 25px;
+    justify-content: center;
+    max-width: 960px; /* Ensures neat alignment */
+    margin: 0 auto;
+}
+
+/* Conference Card */
+.conference-card {
+    background: white;
+   
+    cursor: pointer;
+    position: relative;
+   
+    width: 100%; 
+    
+}
+
+.conference-card-main:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Conference Image */
+.conference-image {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.conference-card-main{
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    border-left: 4px solid rgba(30, 6, 183, 0.8);
+    width: 100%; 
+    max-width: 280px; /* Keeps it neat and compact */
+    margin-bottom: 40px;
+}
+
+/* Conference Card Content */
+.conference-card h4 {
+    font-size: 16px;
+    color: rgba(30, 6, 183, 0.9);
+    margin-bottom: 6px;
+}
+
+.conference-card p {
+    font-size: 13px;
+    color: #444;
+    margin: 3px 0;
+}
+
+/* Card Body */
+.card-body {
+    position: relative;
+}
+
+.card-body a i {
+    font-size: 20px;
+    color: #007bff;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.card-body a i:hover {
+    color: #0056b3;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .conference-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 per row for tablets */
+    }
+}
+
+@media (max-width: 768px) {
+    .conference-grid {
+        grid-template-columns: repeat(1, 1fr); /* 1 per row for small screens */
+    }
+}
+
+/* Add Conference Button */
+.add-conference {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007bff;
+    color: #fff;
+    padding: 12px;
+    border-radius: 50%;
+    font-size: 24px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s;
+    text-decoration: none;
+    border: none;
+}
+
+.add-conference:hover {
+    background-color: #0056b3;
+}

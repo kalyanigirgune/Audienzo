@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Reminder</title>
+    <link rel="stylesheet" href="/css/setReminder.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    <script>
+        // Ensure the date input doesn't allow past times
+        function setMinDateTime() {
+            const now = new Date();
+            const formattedDateTime = now.toISOString().slice(0, 16);
+            document.getElementById("scheduledTime").min = formattedDateTime;
+        }
+
+        window.onload = setMinDateTime;
+    </script>
+    <script>
+        // Check if success message exists in the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const successMessage = urlParams.get("success");
+    
+        if (successMessage) {
+            alert(successMessage);
+            // Remove the query parameter to prevent multiple alerts on refresh
+            const newUrl = window.location.pathname;
+            window.history.replaceState(null, "", newUrl);
+        }
+    </script>
+    
+</head>
+<body>
+
+    
+    <div class="container">
+        <%- include('partials/sidebar', { conferenceId: conference._id }) %>
+        <div class="main-content">
+            <h2>Set Reminder for <%= conference.title %></h2>
+
+            <!-- Display flash messages -->
+            <% if (messages.success) { %>
+                <p class="success-message"><%= messages.success %></p>
+            <% } %>
+            <% if (messages.error) { %>
+                <p class="error-message"><%= messages.error %></p>
+            <% } %>
+
+            <form action="/setReminder/<%= conference._id %>" method="POST" onsubmit="return validateForm()">
+                <label for="scheduledTime">Reminder Time:</label>
+                <input type="datetime-local" id="scheduledTime" name="scheduledTime" required>
+
+                <label for="message">Reminder Message:</label>
+                <textarea name="message" id="message" required></textarea>
+
+                <button type="submit">Save Reminder</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function validateForm() {
+            const scheduledTime = document.getElementById("scheduledTime").value;
+            const message = document.getElementById("message").value.trim();
+
+            if (!scheduledTime) {
+                alert("Please select a reminder time.");
+                return false;
+            }
+            if (!message) {
+                alert("Please enter a reminder message.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>
