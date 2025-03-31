@@ -10,13 +10,15 @@ const Attendee = require('../models/Attendee');
 
 router.get('/conference/:id', async (req, res) => {
     try {
+        const conferenceId = req.params.id;
         const conference = await Conference.findById(req.params.id);
         if (!conference) return res.status(404).send('Conference not found');
-        res.render('conferenceDetail', { conference });
+        res.render('conferenceDetail', { conference,conferenceId: conferenceId });
     } catch (err) {
         res.status(500).send('Server Error');
     }
 });
+
 
 router.get('/conferenceManagement/:id', async (req, res) => {
     const { id } = req.params;
