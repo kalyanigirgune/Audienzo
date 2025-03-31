@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 const Registration = require('../models/Registration');
 const Conference = require('../models/Conference');
 const cloudinary = require('cloudinary').v2;
@@ -42,8 +43,17 @@ router.get('/register/:id', async (req, res) => {
 router.post('/register/:id', async (req, res) => {
     try {
         const { name, email, phone } = req.body;
+        
+        console.log("Received registration request:", req.body);
+        console.log("Session data:", req.session);
+
         if (!name || !email || !phone) {
             return res.json({ success: false, message: 'All fields are required.' });
+        }
+
+        // Check if the user has verified OTP
+        if (!req.session.verified || req.session.email !== email) {
+            return res.json({ success: false, message: 'Email not verified. Please verify OTP first.' });
         }
 
         const conferenceId = req.params.id;
@@ -64,15 +74,23 @@ router.post('/register/:id', async (req, res) => {
         const qrData = `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nConference: ${conference.title}`;
         const qrCodeDataUrl = await QRCode.toDataURL(qrData);
 
+        console.log("Generated QR Code Data URL");
+
+        // Upload QR code to Cloudinary
         const uploadResult = await cloudinary.uploader.upload(qrCodeDataUrl, {
             folder: 'conference_qr_codes',
             public_id: `QR_${conferenceId}_${Date.now()}`
         });
 
+        console.log("Upload result:", uploadResult);
+
         const qrCodeUrl = uploadResult.secure_url;
 
+        // Save registration data
         const newRegistration = new Registration({ conferenceId, name, email, phone, qrCodeUrl });
         await newRegistration.save();
+
+        console.log("Saved registration to DB");
 
         const mailOptions = {
             from: process.env.EMAIL_USER,
@@ -99,6 +117,7 @@ router.post('/send-otp', async (req, res) => {
         const otp = Math.floor(100000 + Math.random() * 900000);
         req.session.otp = otp;
         req.session.email = email;
+        req.session.verified = false; // Reset verification status
 
         const mailOptions = {
             from: process.env.EMAIL_USER,
@@ -107,6 +126,8 @@ router.post('/send-otp', async (req, res) => {
             text: `Your OTP for registration is: ${otp}`
         };
         await transporter.sendMail(mailOptions);
+
+        console.log(`OTP sent to ${email}: ${otp}`);
 
         return res.json({ success: true, message: 'OTP sent to your email.' });
     } catch (err) {
@@ -123,6 +144,7 @@ router.post('/verify-otp', async (req, res) => {
 
         if (req.session.otp && req.session.otp == otp && req.session.email === email) {
             req.session.verified = true;
+            console.log(`OTP verified for ${email}`);
             return res.json({ success: true, message: 'OTP verified successfully.' });
         }
 
