@@ -7,7 +7,7 @@ const cloudinary = require('cloudinary').v2;
 const QRCode = require('qrcode');
 const nodemailer = require('nodemailer');
 const flash = require('express-flash');
-const Razorpay = require('razorpay');
+
 // Ensure `express-session` is configured in `app.js`
 router.use((req, res, next) => {
     res.locals.user = req.user;
@@ -15,10 +15,7 @@ router.use((req, res, next) => {
     next();
 });
 
-const razorpay = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID,
-    key_secret: process.env.RAZORPAY_KEY_SECRET
-});
+
 // Nodemailer Transporter
 const transporter = nodemailer.createTransport({
     service: 'gmail',
