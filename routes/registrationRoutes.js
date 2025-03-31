@@ -8,6 +8,7 @@ const QRCode = require('qrcode');
 const nodemailer = require('nodemailer');
 const flash = require('express-flash');
 
+// Ensure `express-session` is configured in `app.js`
 router.use((req, res, next) => {
     res.locals.user = req.user;
     res.locals.messages = req.flash();
@@ -60,20 +61,20 @@ router.post('/register/:id', async (req, res) => {
             return res.json({ success: false, message: 'Registration deadline has passed.' });
         }
 
-        // *Check if the user is already registered*
+        // **Check if the user is already registered**
         const existingRegistration = await Registration.findOne({ conferenceId, email });
         if (existingRegistration) {
             return res.json({ success: false, message: 'You have already registered for this conference.' });
         }
 
         // Generate QR Code
-        const qrData = Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nConference: ${conference.title};
+        const qrData = `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nConference: ${conference.title}`;
         const qrCodeDataUrl = await QRCode.toDataURL(qrData);
 
         // Upload QR Code to Cloudinary
         const uploadResult = await cloudinary.uploader.upload(qrCodeDataUrl, {
             folder: 'conference_qr_codes',
-            public_id: QR_${conferenceId}_${Date.now()}
+            public_id: `QR_${conferenceId}_${Date.now()}`
         });
 
         const qrCodeUrl = uploadResult.secure_url;
@@ -86,7 +87,7 @@ router.post('/register/:id', async (req, res) => {
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
-            subject: Registration Confirmation - ${conference.title},
+            subject: `Registration Confirmation - ${conference.title}`,
             html: `<p>Dear ${name}, you have successfully registered for ${conference.title}. Your QR code is below:</p>
                    <img src="${qrCodeUrl}" alt="QR Code" style="max-width: 250px;">`
         };
@@ -100,7 +101,7 @@ router.post('/register/:id', async (req, res) => {
     }
 });
 
-// *Step 1: Send OTP*
+// **Step 1: Send OTP**
 router.post('/send-otp', async (req, res) => {
     try {
         const { email } = req.body;
@@ -118,7 +119,7 @@ router.post('/send-otp', async (req, res) => {
             from: process.env.EMAIL_USER,
             to: email,
             subject: 'Your Conference Registration OTP',
-            text: Your OTP for registration is: ${otp}
+            text: `Your OTP for registration is: ${otp}`
         };
 
         await transporter.sendMail(mailOptions);
@@ -130,7 +131,7 @@ router.post('/send-otp', async (req, res) => {
     }
 });
 
-// *Step 2: Verify OTP*
+// **Step 2: Verify OTP**
 router.post('/verify-otp', async (req, res) => {
     try {
         const { email, otp } = req.body;
