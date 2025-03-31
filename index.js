@@ -28,39 +28,37 @@ index.use(express.json());
 index.use(bodyParser.urlencoded({ extended: true }));
 index.use(bodyParser.json());
 
-// MongoDB Connection
+// ✅ Corrected MongoDB Connection (Removed Deprecated Options)
 mongoose
-  .connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/conferenceDB", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.log(err));
+  .connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/conferenceDB")
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch((err) => console.error("❌ MongoDB Connection Error:", err));
 
-// ✅ Corrected: Session Setup (Only Once)
+// ✅ Corrected Session Setup
 index.use(
   session({
     secret: process.env.SESSION_SECRET || "default_secret",
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-      mongoUrl: process.env.MONGO_URI",
+      mongoUrl: process.env.MONGO_URI, // ✅ Removed Extra Quote
+      collectionName: "sessions",
     }),
-    cookie: { secure: false }
+    cookie: { secure: false }, // Set to true if using HTTPS
   })
 );
 
-// ✅ Corrected: Flash Messages (After Session)
+// ✅ Flash Messages Setup
 index.use(flash());
 
-// ✅ Middleware to Make Flash Messages Available in Views
+// ✅ Middleware for Flash Messages & User Session
 index.use((req, res, next) => {
   res.locals.messages = req.flash();
-  res.locals.user = req.session.user; // Makes `user` available in all templates
+  res.locals.user = req.session.user || null; // Ensuring user is defined
   next();
 });
 
-// ✅ Move Reminder Routes AFTER flash is set up
+// ✅ Move Reminder Routes AFTER session & flash are set up
 index.use(reminderRoutes);
 
 // Routes
@@ -73,8 +71,8 @@ index.use(markAttendanceRoutes);
 // Home Route
 index.get("/", async (req, res) => {
   try {
-    const conferences = await Conference.find(); // Fetch all conferences
-    res.render("index", { conferences, user: req.session.user }); // Pass it to EJS
+    const conferences = await Conference.find();
+    res.render("index", { conferences, user: req.session.user });
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
@@ -92,4 +90,4 @@ index.get("/dashboard", async (req, res) => {
 
 // Start Server
 const PORT = process.env.PORT || 3000;
-index.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+index.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
