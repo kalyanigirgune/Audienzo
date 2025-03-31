@@ -7,13 +7,11 @@ const cloudinary = require('cloudinary').v2;
 const QRCode = require('qrcode');
 const nodemailer = require('nodemailer');
 const flash = require('express-flash');
+const session = require('express-session');
 
-// Middleware for flash messages
-router.use((req, res, next) => {
-    res.locals.user = req.user;
-    res.locals.messages = req.flash();
-    next();
-});
+// Ensure session is configured properly
+router.use(session({ secret: 'your_secret_key', resave: false, saveUninitialized: true }));
+router.use(flash());
 
 // Nodemailer Transporter
 const transporter = nodemailer.createTransport({
@@ -63,11 +61,9 @@ router.post('/register/:id', async (req, res) => {
             return res.json({ success: false, message: 'You have already registered for this conference.' });
         }
 
-        // Generate QR Code
         const qrData = `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nConference: ${conference.title}`;
         const qrCodeDataUrl = await QRCode.toDataURL(qrData);
 
-        // Upload QR Code to Cloudinary
         const uploadResult = await cloudinary.uploader.upload(qrCodeDataUrl, {
             folder: 'conference_qr_codes',
             public_id: `QR_${conferenceId}_${Date.now()}`
@@ -75,11 +71,9 @@ router.post('/register/:id', async (req, res) => {
 
         const qrCodeUrl = uploadResult.secure_url;
 
-        // Save Registration
         const newRegistration = new Registration({ conferenceId, name, email, phone, qrCodeUrl });
         await newRegistration.save();
 
-        // Send Confirmation Email
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
@@ -93,6 +87,49 @@ router.post('/register/:id', async (req, res) => {
     } catch (err) {
         console.error('Error processing registration:', err);
         return res.json({ success: false, message: 'Server error. Please try again later.' });
+    }
+});
+
+// Send OTP
+router.post('/send-otp', async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) return res.json({ success: false, message: 'Email is required.' });
+
+        const otp = Math.floor(100000 + Math.random() * 900000);
+        req.session.otp = otp;
+        req.session.email = email;
+
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: 'Your Conference Registration OTP',
+            text: `Your OTP for registration is: ${otp}`
+        };
+        await transporter.sendMail(mailOptions);
+
+        return res.json({ success: true, message: 'OTP sent to your email.' });
+    } catch (err) {
+        console.error('Error sending OTP:', err);
+        return res.json({ success: false, message: 'Error sending OTP. Try again.' });
+    }
+});
+
+// Verify OTP
+router.post('/verify-otp', async (req, res) => {
+    try {
+        const { email, otp } = req.body;
+        if (!email || !otp) return res.json({ success: false, message: 'Email and OTP are required.' });
+
+        if (req.session.otp && req.session.otp == otp && req.session.email === email) {
+            req.session.verified = true;
+            return res.json({ success: true, message: 'OTP verified successfully.' });
+        }
+
+        return res.json({ success: false, message: 'Invalid OTP. Try again.' });
+    } catch (err) {
+        console.error('Error verifying OTP:', err);
+        return res.json({ success: false, message: 'Error verifying OTP. Try again.' });
     }
 });
 
