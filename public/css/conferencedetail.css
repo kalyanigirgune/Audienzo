@@ -1,269 +1,187 @@
-.custom-navbar {
-    background: rgba(30, 6, 183, 0.8);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    padding: 8px 0;
-    min-height: 50px;
-}
+<!DOCTYPE html>
+<html lang="en">
 
-.custom-navbar .navbar-brand {
-    font-size: 1.3rem;
-    font-weight: bold;
-    color: white;
-    transition: color 0.3s ease-in-out;
-}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= conference.title %> - Details</title>
 
-.custom-navbar .nav-link {
-    font-weight: 600;
-    color: white;
-    transition: color 0.3s ease-in-out;
-    padding: 5px 10px;
-}
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-.custom-navbar .nav-link:hover {
-    color: rgb(240, 237, 237);
-}
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/conferencedetail.css">
+</head>
 
-.navbar-toggler {
-    border: none;
-    padding: 5px;
-}
+<body>
 
-.navbar-toggler:focus,
-.navbar-toggler:active {
-    outline: none;
-    box-shadow: none;
-}
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">EventEase</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav"></div>
+        </div>
+    </nav>
 
-.custom-navbar .btn-outline-light {
-    color: white;
-    border-color: white;
-    transition: all 0.3s ease-in-out;
-}
+    <!-- Main Content Area -->
+    <div class="container mt-5 pt-4">
+        <% if (conference) { %>
+        <section class="text-center">
+            <img src="<%= conference.imageUrl %>" alt="Conference Image"
+                class="img-fluid rounded" style="max-width: 100%; height: auto;">
+            <h2 class="mt-3"><%= conference.title %></h2>
+            <p><strong>Date:</strong> <%= new Date(conference.date).toDateString() %></p>
+            <p><strong>Organizer:</strong> <%= conference.organizer %></p>
+            <p><strong>Location:</strong> <%= conference.location %></p>
+            <p><strong>Description:</strong></p>
+            <% conference.description.split('\n').forEach(function(paragraph) { %>
+                <p><%= paragraph %></p>
+            <% }) %>
+        </section>
+        <% } else { %>
+        <p>Conference details not available.</p>
+        <% } %>
+    </div>
 
-.custom-navbar .btn-outline-light:hover {
-    background-color: white;
-    color: blue !important; 
-    border-color: blue !important;
-}
+    <!-- Registration Button -->
+    <div class="text-center mt-4">
+        <% const currentDate = new Date(); const deadlineDate = new Date(conference.deadline); %>
+        <% if (!conference.deadline || deadlineDate >= currentDate) { %>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#emailModal">Register</button>
+        <% } %>
+        <a href="/" class="btn btn-primary">Back to Home</a>
+    </div>
 
-body {
-    background-color: #f8f9fa;
-    padding-top: 60px;
-}
+    <!-- Email Verification Modal -->
+    <div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="emailModalLabel">Enter Your Email</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="emailFlashMessage" class="alert" style="display: none;"></div>
+                    <form id="emailForm">
+                        <div class="mb-3">
+                            <label for="emailVerify" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="emailVerify" required>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Send OTP</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
-.navbar-brand {
-    font-weight: bold;
-}
-.conference-card {
-    max-width: 100%;
-    width: 900px;
-    margin: 20px auto;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    background: white;
-    padding: 20px;
-}
+    <!-- OTP Verification Modal -->
+    <div class="modal fade" id="otpModal" tabindex="-1" aria-labelledby="otpModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="otpModalLabel">Enter OTP</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="otpFlashMessage" class="alert" style="display: none;"></div>
+                    <form id="otpForm">
+                        <div class="mb-3">
+                            <label for="otpCode" class="form-label">Enter OTP</label>
+                            <input type="text" class="form-control" id="otpCode" required>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Verify OTP</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
-/* Image Styling */
-.card-img-top {
-    width: 100%;
-    height: 300px;
-    object-fit: cover;
-}
+    <!-- Registration Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">Register for Conference</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="flashMessage" class="alert" style="display: none;"></div>
+                    <form id="registrationForm">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" readonly required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="text" class="form-control" id="phone" required>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Register</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
-/* Card Body Styling */
-.card-body {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; /* Align content to the top */
-    align-items: flex-start; /* Keep text aligned to the left */
-    padding: 20px;
-    text-align: left; /* Ensure text is not centered */
-}
+    <!-- JavaScript -->
+    <script>
+        let validatedEmail = "";
 
-/* Title */
-.card-body h2 {
-    font-size: 28px;
-    font-weight: bold;
-    margin-bottom: 15px;
-}
+        document.getElementById("emailForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+            const email = document.getElementById("emailVerify").value;
+            const response = await fetch("/send-otp", {
+                method: "POST",
+                body: JSON.stringify({ email }),
+                headers: { "Content-Type": "application/json" }
+            });
 
-/* Paragraphs and other text */
-.card-body p {
-    font-size: 16px;
-    line-height: 1.6;
-    color: #444;
-    margin-bottom: 10px;
-}
+            const data = await response.json();
+            const flashMessage = document.getElementById("emailFlashMessage");
 
-.list-group-item {
-    font-size: 18px;
-    padding: 10px 15px;
-}
+            flashMessage.style.display = "block";
+            flashMessage.textContent = data.message;
+            flashMessage.className = data.success ? "alert alert-success" : "alert alert-danger";
 
-.btn {
-    padding: 10px 20px;
-    font-size: 18px;
-    border-radius: 5px;
-}
+            if (data.success) {
+                validatedEmail = email;
+                setTimeout(() => {
+                    const emailModal = bootstrap.Modal.getInstance(document.getElementById('emailModal'));
+            if (emailModal) emailModal.hide();  // ✅ Close previous modal
+            new bootstrap.Modal(document.getElementById('otpModal')).show(); // ✅ Open next modal
+                }, 1000);
+            }
+        });
 
-.text-center {
-    margin-top: 20px;
-}
+        document.getElementById("otpForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+            const otp = document.getElementById("otpCode").value;
+            const response = await fetch("/verify-otp", {
+                method: "POST",
+                body: JSON.stringify({ email: validatedEmail, otp }),
+                headers: { "Content-Type": "application/json" }
+            });
 
-.btn-success {
-    background-color: rgba(0, 150, 136, 0.9) !important;
-    border-color: rgba(0, 150, 136, 0.9) !important;
-}
+            const data = await response.json();
+            if (data.success) {
+                setTimeout(() => {
+                    new bootstrap.Modal(document.getElementById('otpModal')).hide();
+                    new bootstrap.Modal(document.getElementById('registerModal')).show();
+                    document.getElementById("email").value = validatedEmail;
+                }, 1000);
+            }
+        });
+    </script>
 
-.btn-success:hover {
-    background-color: rgba(0, 130, 116, 1) !important;
-}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 
-.btn-primary {
-    background-color: rgba(30, 6, 183, 0.8) !important;
-    border-color: rgba(30, 6, 183, 0.8) !important;
-}
-
-.btn-primary:hover {
-    background-color: rgba(20, 4, 143, 0.9) !important;
-}
-
-footer {
-    background: #222;
-    color: #fff;
-    padding: 30px 0;
-    text-align: center;
-    font-size: 1rem;
-}
-
-.navbar {
-    background-color: rgba(30, 6, 183, 0.8) !important;
-}
-
-.content {
-    padding: 30px;
-    max-width: 800px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    font-family: 'Arial', sans-serif;
-    color: #333;
-    margin-left: 370px;
-    margin-top: 25px;
-}
-
-.content h2 {
-    font-size: 28px;
-    color: rgba(30, 6, 183, 0.9); 
-    border-bottom: 3px solid rgba(30, 6, 183, 0.8);
-    padding-bottom: 5px;
-    margin-bottom: 20px;
-}
-
-.content p {
-    font-size: 16px;
-    line-height: 1.6;
-    color: #444;
-    margin-bottom: 10px;
-}
-
-.content strong {
-    color: rgba(30, 6, 183, 0.9);
-}
-
-.content img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; 
-    margin-bottom: 30px;
-}
-
-@media screen and (max-width: 768px) {
-    .content {
-        margin-left: 0;
-        padding: 20px;
-        width: 90%;
-        margin: auto;
-    }
-}
-.conference-card {
-    max-width: 900px; 
-    width: 100%;
-    margin: 20px auto;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    background: white;
-    padding: 20px; 
-    display: flex;
-    flex-direction: column;
-}
-
-/* Image Styling */
-.card-img-top {
-    width: 100%;
-    height: 300px;
-    object-fit: cover;
-}
-
-/* Card Body Styling */
-.card-body {
-    padding: 20px; 
-    text-align: left; /* Ensures left alignment */
-}
-
-/* Title */
-.card-body h2 {
-    font-size: 28px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    text-align: left;
-}
-
-/* Paragraphs and Text */
-.card-body p {
-    font-size: 16px;
-    line-height: 1.6;
-    color: #444;
-    margin-bottom: 10px;
-    text-align: justify; /* Improves readability */
-}
-
-/* List Items */
-.list-group-item {
-    font-size: 16px;
-    padding: 10px 15px;
-    text-align: left; 
-}
-
-/* Button Styling */
-.btn {
-    padding: 10px 20px;
-    font-size: 18px;
-    border-radius: 5px;
-    text-align: center;
-}
-
-/* Responsive Design */
-@media screen and (max-width: 992px) {
-    .conference-card {
-        width: 95%;
-    }
-}
-
-@media screen and (max-width: 768px) {
-    .conference-card {
-        width: 100%;
-        padding: 15px;
-    }
-
-    .card-body h2 {
-        font-size: 24px;
-    }
-}
+</html>
