@@ -46,7 +46,7 @@ router.post('/register/:id', async (req, res) => {
         
         console.log("Received registration request:", req.body);
         console.log("Session data:", req.session);
-
+        console.log(name,email,phone);
         if (!name || !email || !phone) {
             return res.json({ success: false, message: 'All fields are required.' });
         }
