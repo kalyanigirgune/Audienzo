@@ -1,4 +1,272 @@
-/* Centering the container */
+.custom-navbar {
+    background: rgba(30, 6, 183, 0.8);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 8px 0;
+    min-height: 50px;
+}
+
+.custom-navbar .navbar-brand {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: white;
+    transition: color 0.3s ease-in-out;
+}
+
+.custom-navbar .nav-link {
+    font-weight: 600;
+    color: white;
+    transition: color 0.3s ease-in-out;
+    padding: 5px 10px;
+}
+
+.custom-navbar .nav-link:hover {
+    color: rgb(240, 237, 237);
+}
+
+.navbar-toggler {
+    border: none;
+    padding: 5px;
+}
+
+.navbar-toggler:focus,
+.navbar-toggler:active {
+    outline: none;
+    box-shadow: none;
+}
+
+.custom-navbar .btn-outline-light {
+    color: white;
+    border-color: white;
+    transition: all 0.3s ease-in-out;
+}
+
+.custom-navbar .btn-outline-light:hover {
+    background-color: white;
+    color: blue !important; 
+    border-color: blue !important;
+}
+
+body {
+    background-color: #f8f9fa;
+    padding-top: 60px;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+.conference-card {
+    max-width: 100%;
+    width: 900px;
+    margin: 20px auto;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    background: white;
+    padding: 20px;
+}
+
+/* Image Styling */
+.card-img-top {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+/* Card Body Styling */
+.card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Align content to the top */
+    align-items: flex-start; /* Keep text aligned to the left */
+    padding: 20px;
+    text-align: left; /* Ensure text is not centered */
+}
+
+/* Title */
+.card-body h2 {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* Paragraphs and other text */
+.card-body p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #444;
+    margin-bottom: 10px;
+}
+
+.list-group-item {
+    font-size: 18px;
+    padding: 10px 15px;
+}
+
+.btn {
+    padding: 10px 20px;
+    font-size: 18px;
+    border-radius: 5px;
+}
+
+.text-center {
+    margin-top: 20px;
+}
+
+.btn-success {
+    background-color: rgba(0, 150, 136, 0.9) !important;
+    border-color: rgba(0, 150, 136, 0.9) !important;
+}
+
+.btn-success:hover {
+    background-color: rgba(0, 130, 116, 1) !important;
+}
+
+.btn-primary {
+    background-color: rgba(30, 6, 183, 0.8) !important;
+    border-color: rgba(30, 6, 183, 0.8) !important;
+}
+
+.btn-primary:hover {
+    background-color: rgba(20, 4, 143, 0.9) !important;
+}
+
+footer {
+    background: #222;
+    color: #fff;
+    padding: 30px 0;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.navbar {
+    background-color: rgba(30, 6, 183, 0.8) !important;
+}
+
+.content {
+    padding: 30px;
+    max-width: 800px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    margin-left: 370px;
+    margin-top: 25px;
+}
+
+.content h2 {
+    font-size: 28px;
+    color: rgba(30, 6, 183, 0.9); 
+    border-bottom: 3px solid rgba(30, 6, 183, 0.8);
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+}
+
+.content p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #444;
+    margin-bottom: 10px;
+}
+
+.content strong {
+    color: rgba(30, 6, 183, 0.9);
+}
+
+.content img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    margin-bottom: 30px;
+}
+
+@media screen and (max-width: 768px) {
+    .content {
+        margin-left: 0;
+        padding: 20px;
+        width: 90%;
+        margin: auto;
+    }
+}
+.conference-card {
+    max-width: 900px; 
+    width: 100%;
+    margin: 20px auto;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    background: white;
+    padding: 20px; 
+    display: flex;
+    flex-direction: column;
+}
+
+/* Image Styling */
+.card-img-top {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+/* Card Body Styling */
+.card-body {
+    padding: 20px; 
+    text-align: left; /* Ensures left alignment */
+}
+
+/* Title */
+.card-body h2 {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+/* Paragraphs and Text */
+.card-body p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #444;
+    margin-bottom: 10px;
+    text-align: justify; /* Improves readability */
+}
+
+/* List Items */
+.list-group-item {
+    font-size: 16px;
+    padding: 10px 15px;
+    text-align: left; 
+}
+
+/* Button Styling */
+.btn {
+    padding: 10px 20px;
+    font-size: 18px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 992px) {
+    .conference-card {
+        width: 95%;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .conference-card {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .card-body h2 {
+        font-size: 24px;
+    }
+}/* Centering the container */
 .container {
     max-width: 800px; /* Adjust width as needed */
     margin: 0 auto; /* Centers the container */
