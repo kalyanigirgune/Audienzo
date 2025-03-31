@@ -92,7 +92,7 @@ router.post('/register/:id', async (req, res) => {
                    <img src="${qrCodeUrl}" alt="QR Code" style="max-width: 250px;">`
         };
         await transporter.sendMail(mailOptions);
-
+        console.log('Registration  Successfully done...')
         return res.json({ success: true, message: 'Registration successful! Check your email for confirmation.' });
 
     } catch (err) {
