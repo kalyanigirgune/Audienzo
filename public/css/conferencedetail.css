@@ -1,187 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
+/* Centering the container */
+.container {
+    max-width: 800px; /* Adjust width as needed */
+    margin: 0 auto; /* Centers the container */
+    text-align: left; /* Ensures text alignment to the left */
+}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= conference.title %> - Details</title>
+/* Image Styling */
+.container img {
+    display: block;
+    width: 100%; /* Full width of the container */
+    height: auto;
+    margin: 0 auto;
+}
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+/* Event Name Styling */
+.container h2 {
+    text-align: center; /* Centers event name */
+    margin-top: 15px;
+    font-size: 2rem; /* Adjust size as needed */
+    font-weight: bold;
+}
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/conferencedetail.css">
-</head>
+/* Paragraph Styling */
+.container p {
+    text-align: left; /* Ensures text remains left-aligned */
+}
 
-<body>
+/* Centering buttons while keeping text left-aligned */
+.text-center {
+    text-align: center;
+}
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="/">EventEase</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav"></div>
-        </div>
-    </nav>
-
-    <!-- Main Content Area -->
-    <div class="container mt-5 pt-4">
-        <% if (conference) { %>
-        <section class="text-center">
-            <img src="<%= conference.imageUrl %>" alt="Conference Image"
-                class="img-fluid rounded" style="max-width: 100%; height: auto;">
-            <h2 class="mt-3"><%= conference.title %></h2>
-            <p><strong>Date:</strong> <%= new Date(conference.date).toDateString() %></p>
-            <p><strong>Organizer:</strong> <%= conference.organizer %></p>
-            <p><strong>Location:</strong> <%= conference.location %></p>
-            <p><strong>Description:</strong></p>
-            <% conference.description.split('\n').forEach(function(paragraph) { %>
-                <p><%= paragraph %></p>
-            <% }) %>
-        </section>
-        <% } else { %>
-        <p>Conference details not available.</p>
-        <% } %>
-    </div>
-
-    <!-- Registration Button -->
-    <div class="text-center mt-4">
-        <% const currentDate = new Date(); const deadlineDate = new Date(conference.deadline); %>
-        <% if (!conference.deadline || deadlineDate >= currentDate) { %>
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#emailModal">Register</button>
-        <% } %>
-        <a href="/" class="btn btn-primary">Back to Home</a>
-    </div>
-
-    <!-- Email Verification Modal -->
-    <div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="emailModalLabel">Enter Your Email</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="emailFlashMessage" class="alert" style="display: none;"></div>
-                    <form id="emailForm">
-                        <div class="mb-3">
-                            <label for="emailVerify" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="emailVerify" required>
-                        </div>
-                        <button type="submit" class="btn btn-success w-100">Send OTP</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- OTP Verification Modal -->
-    <div class="modal fade" id="otpModal" tabindex="-1" aria-labelledby="otpModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="otpModalLabel">Enter OTP</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="otpFlashMessage" class="alert" style="display: none;"></div>
-                    <form id="otpForm">
-                        <div class="mb-3">
-                            <label for="otpCode" class="form-label">Enter OTP</label>
-                            <input type="text" class="form-control" id="otpCode" required>
-                        </div>
-                        <button type="submit" class="btn btn-success w-100">Verify OTP</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Registration Modal -->
-    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="registerModalLabel">Register for Conference</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="flashMessage" class="alert" style="display: none;"></div>
-                    <form id="registrationForm">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Full Name</label>
-                            <input type="text" class="form-control" id="name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" readonly required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="phone" class="form-label">Phone Number</label>
-                            <input type="text" class="form-control" id="phone" required>
-                        </div>
-                        <button type="submit" class="btn btn-success w-100">Register</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- JavaScript -->
-    <script>
-        let validatedEmail = "";
-
-        document.getElementById("emailForm").addEventListener("submit", async function (event) {
-            event.preventDefault();
-            const email = document.getElementById("emailVerify").value;
-            const response = await fetch("/send-otp", {
-                method: "POST",
-                body: JSON.stringify({ email }),
-                headers: { "Content-Type": "application/json" }
-            });
-
-            const data = await response.json();
-            const flashMessage = document.getElementById("emailFlashMessage");
-
-            flashMessage.style.display = "block";
-            flashMessage.textContent = data.message;
-            flashMessage.className = data.success ? "alert alert-success" : "alert alert-danger";
-
-            if (data.success) {
-                validatedEmail = email;
-                setTimeout(() => {
-                    const emailModal = bootstrap.Modal.getInstance(document.getElementById('emailModal'));
-            if (emailModal) emailModal.hide();  // ✅ Close previous modal
-            new bootstrap.Modal(document.getElementById('otpModal')).show(); // ✅ Open next modal
-                }, 1000);
-            }
-        });
-
-        document.getElementById("otpForm").addEventListener("submit", async function (event) {
-            event.preventDefault();
-            const otp = document.getElementById("otpCode").value;
-            const response = await fetch("/verify-otp", {
-                method: "POST",
-                body: JSON.stringify({ email: validatedEmail, otp }),
-                headers: { "Content-Type": "application/json" }
-            });
-
-            const data = await response.json();
-            if (data.success) {
-                setTimeout(() => {
-                    new bootstrap.Modal(document.getElementById('otpModal')).hide();
-                    new bootstrap.Modal(document.getElementById('registerModal')).show();
-                    document.getElementById("email").value = validatedEmail;
-                }, 1000);
-            }
-        });
-    </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-
-</html>
+.text-center button, 
+.text-center a {
+    display: inline-block;
+    margin: 5px;
+}
