@@ -30,7 +30,7 @@ index.use(bodyParser.json());
 
 // ✅ Corrected MongoDB Connection (Removed Deprecated Options)
 mongoose
-  .connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/conferenceDB")
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("✅ MongoDB connected"))
   .catch((err) => console.error("❌ MongoDB Connection Error:", err));
 
@@ -89,5 +89,5 @@ index.get("/dashboard", async (req, res) => {
 });
 
 // Start Server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 index.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
