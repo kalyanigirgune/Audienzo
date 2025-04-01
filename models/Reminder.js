@@ -7,4 +7,4 @@ const ReminderSchema = new mongoose.Schema({
     status: { type: String, enum: ["pending", "sent"], default: "pending" }
 });
 
-module.exports = mongoose.model("Reminder", ReminderSchema);
+module.exports = mongoose.model("Reminder", ReminderSchema);//.
