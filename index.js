@@ -25,8 +25,7 @@ index.set("views", path.join(__dirname, "views"));
 // Body Parsers
 index.use(express.urlencoded({ extended: true }));
 index.use(express.json());
-index.use(bodyParser.urlencoded({ extended: true }));
-index.use(bodyParser.json());
+
 
 // ✅ Corrected MongoDB Connection (Removed Deprecated Options)
 mongoose
