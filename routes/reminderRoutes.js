@@ -68,12 +68,13 @@ async function sendReminders() {
     try {
         console.log("🔍 Checking for reminders...");
         const now = new Date();
+        now.setSeconds(0, 0); // Remove milliseconds for better comparison
+        console.log("🕒 Current Server Time:", now);
+
         const reminders = await Reminder.find({ scheduledTime: { $lte: now } });
 
-        if (reminders.length === 0) {
-            console.log("✅ No reminders to send.");
-            return;
-        }
+        console.log("📌 Found Reminders:", reminders.length);
+        if (reminders.length === 0) return;
 
         for (const reminder of reminders) {
             console.log(`📩 Processing reminder for conference ID: ${reminder.conferenceId}`);
@@ -105,14 +106,14 @@ async function sendReminders() {
                 }
             }
 
-            // ✅ Delete reminder after sending emails
-            await Reminder.deleteOne({ _id: reminder._id });
-            console.log(`🗑️ Deleted reminder with ID: ${reminder._id}`);
+            await Reminder.updateOne({ _id: reminder._id }, { status: "sent" });
+            console.log(`✅ Marked reminder ${reminder._id} as sent.`);
         }
     } catch (err) {
         console.error("❌ Error sending reminders:", err);
     }
 }
+
 
 // ✅ Call `sendReminders()` at startup to check immediately
 setTimeout(() => {
