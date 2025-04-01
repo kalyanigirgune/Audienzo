@@ -9,99 +9,123 @@ const Registration = require("../models/Registration");
 
 dotenv.config();
 
-// Configure Email Transporter
+// ✅ Configure Nodemailer
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: process.env.EMAIL_USER, // Make sure this is set in .env
+        pass: process.env.EMAIL_PASS, // Use App Password if needed
     },
 });
 
-// Show reminder form
+// ✅ Show reminder form
 router.get("/setReminder/:conferenceId", async (req, res) => {
     try {
         const conference = await Conference.findById(req.params.conferenceId);
+        if (!conference) {
+            req.flash("error", "Conference not found.");
+            return res.redirect("/dashboard");
+        }
+
         res.render("setReminder", { conference, messages: req.flash() });
     } catch (err) {
-        console.error("Error fetching conference:", err);
+        console.error("❌ Error fetching conference:", err);
         req.flash("error", "Failed to load conference.");
         res.redirect("/dashboard");
     }
 });
 
-// Handle reminder submission
+// ✅ Handle reminder submission
 router.post("/setReminder/:conferenceId", async (req, res) => {
     try {
         const { scheduledTime, message } = req.body;
         const conferenceId = req.params.conferenceId;
 
-        const newReminder = new Reminder({  
-            conferenceId,  
-            scheduledTime: new Date(scheduledTime),  // Ensure correct date format
-            message,  
-            status: "pending"  // Track reminders that haven't been sent
-        });  
+        if (!scheduledTime || !message) {
+            req.flash("error", "All fields are required.");
+            return res.redirect("back");
+        }
 
-        await newReminder.save();  
-        req.flash("success", "Reminder set successfully!");  
-        res.redirect(`/setReminder/${conferenceId}?success=Reminder set successfully!`);  
+        const newReminder = new Reminder({
+            conferenceId,
+            scheduledTime: new Date(scheduledTime),
+            message,
+        });
 
-    } catch (err) {  
-        console.error("❌ Error saving reminder:", err);  
-        req.flash("error", "Failed to set reminder.");  
-        res.redirect("back");  
+        await newReminder.save();
+        console.log("✅ Reminder saved:", newReminder);
+        req.flash("success", "Reminder set successfully!");
+        res.redirect(`/setReminder/${conferenceId}`);
+    } catch (err) {
+        console.error("❌ Error setting reminder:", err);
+        req.flash("error", "Failed to set reminder.");
+        res.redirect("back");
     }
 });
 
-// Function to send reminders
+// ✅ Function to send reminders
 async function sendReminders() {
     try {
-        const now = new Date();
-        now.setSeconds(0, 0); // Ignore milliseconds for better matching
-
         console.log("🔍 Checking for reminders...");
-        console.log("📅 Current Server Time:", now);
+        const now = new Date();
+        const reminders = await Reminder.find({ scheduledTime: { $lte: now } });
 
-        const reminders = await Reminder.find({ 
-            scheduledTime: { $lte: now },  
-            status: "pending"  // Ensure only unsent reminders are fetched
-        });
+        if (reminders.length === 0) {
+            console.log("✅ No reminders to send.");
+            return;
+        }
 
-        console.log("📌 Found Reminders:", reminders.length);
+        for (const reminder of reminders) {
+            console.log(`📩 Processing reminder for conference ID: ${reminder.conferenceId}`);
 
-        for (const reminder of reminders) {  
             const conference = await Conference.findById(reminder.conferenceId);
+            if (!conference) {
+                console.error(`❌ Conference not found for ID: ${reminder.conferenceId}`);
+                continue;
+            }
+
             const registrations = await Registration.find({ conferenceId: reminder.conferenceId });
+            if (registrations.length === 0) {
+                console.log("⚠️ No registrations found for this conference.");
+                continue;
+            }
 
-            for (const registration of registrations) {  
-                try {  
-                    await transporter.sendMail({  
-                        from: process.env.EMAIL_USER,  
-                        to: registration.email,  
-                        subject: `Reminder: ${conference.title}`,  
-                        text: reminder.message,  
-                    });  
-                    console.log(`✅ Reminder sent to ${registration.email}`);  
-                } catch (emailErr) {  
-                    console.error(`❌ Failed to send email to ${registration.email}:`, emailErr);  
-                }  
-            }  
+            for (const registration of registrations) {
+                try {
+                    console.log(`📧 Sending email to: ${registration.email}`);
+                    await transporter.sendMail({
+                        from: process.env.EMAIL_USER,
+                        to: registration.email,
+                        subject: `Reminder: ${conference.title}`,
+                        text: reminder.message,
+                    });
+                    console.log(`✅ Reminder sent to ${registration.email}`);
+                } catch (emailErr) {
+                    console.error(`❌ Failed to send email to ${registration.email}:`, emailErr);
+                }
+            }
 
-            // Mark reminder as sent instead of deleting (for debugging)
-            await Reminder.updateOne({ _id: reminder._id }, { status: "sent" });
-        }  
-    } catch (err) {  
-        console.error("❌ Error sending reminders:", err);  
+            // ✅ Delete reminder after sending emails
+            await Reminder.deleteOne({ _id: reminder._id });
+            console.log(`🗑️ Deleted reminder with ID: ${reminder._id}`);
+        }
+    } catch (err) {
+        console.error("❌ Error sending reminders:", err);
     }
 }
 
-// Schedule reminders to check every minute
+// ✅ Call `sendReminders()` at startup to check immediately
+setTimeout(() => {
+    console.log("🚀 Initializing reminder check...");
+    sendReminders();
+}, 5000); // Wait 5s after server starts
+
+// ✅ Schedule reminders to check every minute
 setInterval(() => {
     try {
         sendReminders();
     } catch (err) {
-        console.error("❌ Error in setInterval:", err);
+        console.error("❌ Error in scheduled reminder task:", err);
     }
 }, 60 * 1000);
 
