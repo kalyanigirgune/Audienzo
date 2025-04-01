@@ -90,6 +90,11 @@ for (const reminder of reminders) {
 }
 
 // Schedule reminders to check every minute
-setInterval(sendReminders, 60 * 1000);
-
+setInterval(() => {
+    try {
+        sendReminders();
+    } catch (err) {
+        console.error("❌ Error in setInterval:", err);
+    }
+}, 60 * 1000);
 module.exports = router;  
