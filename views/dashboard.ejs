@@ -110,10 +110,7 @@
             <!-- Past Conferences -->
             <section id="pastConferences">
     <h3>Past Events</h3>
-    <% let past = conferences.filter(conference => {
-    let conferenceDate = new Date(conference.date);
-    return conferenceDate.toDateString() < currentDate.toDateString();
-}); %>
+     <% let past = conferences.filter(conference => new Date(conference.date) < currentDate); %>
 
     <% if (past.length === 0) { %>
         <p class="no-conferences">No past events.</p>
