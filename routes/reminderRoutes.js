@@ -35,20 +35,21 @@ router.get("/setReminder/:conferenceId", async (req, res) => {
 // ✅ Handle reminder submission
 router.post("/setReminder/:conferenceId", async (req, res) => {
     try {
-        const { scheduledTime, message } = req.body;
+        let { scheduledTime, message } = req.body;
         const conferenceId = req.params.conferenceId;
+
+        // ✅ Convert scheduled time to IST
+        const scheduledDate = new Date(scheduledTime);
+        scheduledDate.setHours(scheduledDate.getHours() + 5);
+        scheduledDate.setMinutes(scheduledDate.getMinutes() + 30);
 
         const newReminder = new Reminder({
             conferenceId,
-            scheduledTime,
+            scheduledTime: scheduledDate,  // Store IST time
             message
         });
 
         await newReminder.save();
-
-        // ✅ Schedule this reminder
-        scheduleReminder(newReminder);
-
         req.flash("success", "Reminder set successfully!");
         res.redirect(`/setReminder/${conferenceId}?success=Reminder set successfully!`);
     } catch (err) {
