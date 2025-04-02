@@ -108,52 +108,31 @@
             </section>
 
             <!-- Past Conferences -->
-            <section id="pastConferences" style="display: none;">
-                <h3>Past Events</h3>
-                <% let past=conferences.filter(conference=> new Date(conference.date) < currentDate); %>
-                        <% if (past.length===0) { %>
-                            <p class="no-conferences">No past events.</p>
-                            <% } else { %>
-                                <div class="conference-grid">
-                                    <% past.forEach(conference=> { %>
-                                        <div class="conference-card"
-                                            data-url="/conferenceManagement/<%= conference._id %>">
-                                            <% if (conference.imageUrl) { %>
-                                                <img src="<%= conference.imageUrl %>" alt="<%= conference.title %>"
-                                                    class="card-img-top">
-                                                <% } %>
-                                                    <div class="card-body">
-                                                        <h2 class="text-center mb-4">
-                                                            <a href="#" class="text-decoration-none text-dark">
-                                                                <%= conference.title %>
-                                                            </a>
-                                                        </h2>
-                                                        <ul class="list-group list-group-flush">
-                                                            <li class="list-group-item"><strong>Date:</strong>
-                                                                <%= conference.date %>
-                                                            </li>
-                                                            <li class="list-group-item"><strong>Organizer:</strong>
-                                                                <%= conference.organizer %>
-                                                            </li>
-                                                            <li class="list-group-item"><strong>Location:</strong>
-                                                                <%= conference.location %>
-                                                            </li>
-                                                            <li class="list-group-item">
-                                                                <strong>Deadline:</strong>
-                                                                <%= conference.deadline ? conference.deadline : "N/A" %>
-                                                            </li>
-                                                            <a href="#" class="delete-btn"
-                                                                data-id="<%= conference._id %>"
-                                                                onclick="deleteConference(event, this)">
-                                                                <i class="fas fa-trash-alt delete-icon"></i>
-                                                            </a>
-                                                        </ul>
-                                                    </div>
-                                        </div>
-                                        <% }) %>
-                                </div>
-                                <% } %>
-            </section>
+            <section id="pastConferences">
+    <h3>Past Events</h3>
+    <% let past = conferences.filter(conference => new Date(conference.date) < currentDate); %>
+    <% if (past.length === 0) { %>
+        <p class="no-conferences">No past events.</p>
+    <% } else { %>
+        <div class="conference-grid">
+            <% past.forEach(conference => { %>
+                <div class="conference-card-main">
+                    <div class="conference-card" data-url="/conferenceManagement/<%= conference._id %>">
+                        <img src="<%= conference.imageUrl ? conference.imageUrl : '/default-conference.png' %>" class="conference-image" alt="Conference Image">
+                        <h4><%= conference.title %></h4>
+                        <p><strong>Date:</strong> <%= new Date(conference.date).toLocaleDateString() %></p>
+                        <p><strong>Organizer:</strong> <%= conference.organizer %></p>
+                        <p><strong>Location:</strong> <%= conference.location %></p>
+                        <p><strong>Deadline:</strong> <%= conference.deadline || "N/A" %></p>
+                    </div>
+                    <a href="#" class="delete-btn" data-id="<%= conference._id %>" onclick="deleteConference(event, this)">
+                        <i class="fas fa-trash-alt delete-icon"></i>
+                    </a>
+                </div>
+            <% }) %>
+        </div>
+    <% } %>
+</section>
         </main>
 
 </body>
