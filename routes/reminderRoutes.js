@@ -39,12 +39,12 @@ router.post("/setReminder/:conferenceId", async (req, res) => {
         const { scheduledTime, message } = req.body;
         const conferenceId = req.params.conferenceId;
 
-        // ✅ Store the scheduled time as entered (assumed to be in IST)
-        const scheduledDate = new Date(scheduledTime);
+        // ✅ Convert IST to UTC before storing
+        const scheduledDate = moment.tz(scheduledTime, "Asia/Kolkata").utc().toDate();
 
         const newReminder = new Reminder({
             conferenceId,
-            scheduledTime: scheduledDate,  // Store IST time as it is
+            scheduledTime: scheduledDate,  // Store in UTC
             message
         });
 
@@ -64,9 +64,11 @@ async function sendReminders() {
     console.log("🚀 Checking for due reminders...");
 
     try {
-        // ✅ Get current time in IST
-        const now = moment().tz("Asia/Kolkata").toDate();
-        const reminders = await Reminder.find({ scheduledTime: { $lte: now }, status: "pending" });
+        // ✅ Get current time in UTC
+        const nowUTC = moment().utc().toDate();
+
+        // ✅ Find pending reminders that are due
+        const reminders = await Reminder.find({ scheduledTime: { $lte: nowUTC }, status: "pending" });
 
         console.log(`📌 Found ${reminders.length} reminders to send.`);
 
