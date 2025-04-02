@@ -62,8 +62,11 @@ router.post('/register/:id', async (req, res) => {
             return res.json({ success: false, message: 'Conference not found.' });
         }
 
-        if (new Date(conference.deadline) < new Date()) {
-            return res.json({ success: false, message: 'Registration deadline has passed.' });
+        const deadlineDate = new Date(conference.deadline);
+        deadlineDate.setHours(23, 59, 59, 999); // Set to end of the day
+
+        if (new Date() > deadlineDate) {
+        return res.json({ success: false, message: 'Registration deadline has passed.' });
         }
 
         const existingRegistration = await Registration.findOne({ conferenceId, email });
