@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const nodemailer = require("nodemailer");
 const dotenv = require("dotenv");
+const moment = require("moment-timezone");
 const Conference = require("../models/Conference");
 const Reminder = require("../models/Reminder");
 const Registration = require("../models/Registration");
@@ -35,23 +36,22 @@ router.get("/setReminder/:conferenceId", async (req, res) => {
 // ✅ Handle reminder submission
 router.post("/setReminder/:conferenceId", async (req, res) => {
     try {
-        let { scheduledTime, message } = req.body;
+        const { scheduledTime, message } = req.body;
         const conferenceId = req.params.conferenceId;
 
-        // ✅ Convert scheduled time to IST
+        // ✅ Store the scheduled time as entered (assumed to be in IST)
         const scheduledDate = new Date(scheduledTime);
-        scheduledDate.setHours(scheduledDate.getHours() + 5);
-        scheduledDate.setMinutes(scheduledDate.getMinutes() + 30);
 
         const newReminder = new Reminder({
             conferenceId,
-            scheduledTime: scheduledDate,  // Store IST time
+            scheduledTime: scheduledDate,  // Store IST time as it is
             message
         });
 
         await newReminder.save();
         req.flash("success", "Reminder set successfully!");
         res.redirect(`/setReminder/${conferenceId}?success=Reminder set successfully!`);
+
     } catch (err) {
         console.error(err);
         req.flash("error", "Failed to set reminder.");
@@ -59,16 +59,25 @@ router.post("/setReminder/:conferenceId", async (req, res) => {
     }
 });
 
-// ✅ Function to schedule a reminder
-function scheduleReminder(reminder) {
-    const delay = new Date(reminder.scheduledTime) - new Date();
-    if (delay > 0) {
-        setTimeout(async () => {
-            try {
-                const conference = await Conference.findById(reminder.conferenceId);
-                const registrations = await Registration.find({ conferenceId: reminder.conferenceId });
+// ✅ Function to send reminders at their scheduled IST time
+async function sendReminders() {
+    console.log("🚀 Checking for due reminders...");
 
-                for (const registration of registrations) {
+    try {
+        // ✅ Get current time in IST
+        const now = moment().tz("Asia/Kolkata").toDate();
+        const reminders = await Reminder.find({ scheduledTime: { $lte: now }, status: "pending" });
+
+        console.log(`📌 Found ${reminders.length} reminders to send.`);
+
+        for (const reminder of reminders) {
+            const conference = await Conference.findById(reminder.conferenceId);
+            const registrations = await Registration.find({ conferenceId: reminder.conferenceId });
+
+            console.log(`📌 Sending reminders for conference: ${conference.title}, Registrations found: ${registrations.length}`);
+
+            for (const registration of registrations) {
+                try {
                     await transporter.sendMail({
                         from: process.env.EMAIL_USER,
                         to: registration.email,
@@ -76,28 +85,22 @@ function scheduleReminder(reminder) {
                         text: reminder.message,
                     });
                     console.log(`✅ Reminder sent to ${registration.email}`);
+                } catch (emailErr) {
+                    console.error(`❌ Failed to send email to ${registration.email}:`, emailErr);
                 }
-
-                // ✅ Mark as sent
-                reminder.status = "sent";
-                await reminder.save();
-                console.log(`🗑️ Reminder marked as sent: ${reminder._id}`);
-            } catch (err) {
-                console.error("❌ Error sending reminder:", err);
             }
-        }, delay);
+
+            // ✅ Mark the reminder as sent
+            reminder.status = "sent";
+            await reminder.save();
+            console.log(`🗑️ Reminder marked as sent: ${reminder._id}`);
+        }
+    } catch (err) {
+        console.error("❌ Error sending reminders:", err);
     }
 }
 
-// ✅ Schedule existing reminders on server start
-(async function scheduleExistingReminders() {
-    try {
-        const reminders = await Reminder.find({ status: "pending" });
-        console.log(`🔄 Rescheduling ${reminders.length} pending reminders...`);
-        reminders.forEach(scheduleReminder);
-    } catch (err) {
-        console.error("❌ Error scheduling reminders on startup:", err);
-    }
-})();
+// ✅ Schedule reminders to check every minute
+setInterval(sendReminders, 60 * 1000);
 
 module.exports = router;
