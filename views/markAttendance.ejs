@@ -19,18 +19,23 @@
         <div class="main-content">
             <h2>Scan QR Code for Attendance</h2>
             <button id="startCamera">Start Camera</button>
-            <div id="qr-reader"></div>
+            <div id="qr-reader" style="display: none;"></div>
             <p><strong>Scanned Code:</strong> <span id="qr-result">None</span></p>
         </div>
     </div>
 
     <script>
-        let conferenceId = "<%= conferenceId %>"; // Define conferenceId globally
+        let conferenceId = "<%= conferenceId %>"; // Get conferenceId from EJS variable
         console.log("Conference ID:", conferenceId);
 
         let scanner;
         document.getElementById("startCamera").addEventListener("click", function () {
             document.getElementById("qr-reader").style.display = "block";
+
+            if (scanner) {
+                scanner.clear(); // Clear previous instance if exists
+            }
+
             scanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 });
             scanner.render(qrCodeSuccessCallback);
         });
@@ -52,7 +57,7 @@
             console.log(`Extracted Email: ${scannedEmail}`);
             console.log(`Extracted Conference: ${scannedConferenceName}`);
 
-            fetch(`http://localhost:3000/markAttendance/${conferenceId}`, {
+            fetch(`/markAttendance/${conferenceId}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email: scannedEmail })
